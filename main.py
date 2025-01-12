@@ -1,35 +1,35 @@
 import mysql.connector
 
-def connect_db():
-    """Connect to the locally installed database."""
-    return mysql.connector.connect(
-        host="localhost",        # Replace with your database host (e.g., "127.0.0.1")
-        user="root",             # Replace with your database username
-        password="Usman12Ahmad",  # Replace with your database password
-        database="StudentManagement"  # Replace with your database name
-    )
+def connect_db(ip):
+    """Connect to the locally installed database with a timeout."""
+    try:
+        return mysql.connector.connect(
+            host=ip,  # PC 2
+            user="usman",
+            password="usman123",
+            database="StudentManagement",
+            connect_timeout=5  # Timeout in seconds
+        )
+    except mysql.connector.Error as e:
+        raise Exception(f"Failed to connect to {ip}: {e}")
 
-def fetch_students():
+
+def fetch_students(conn):
     """Fetch all students."""
-    conn = connect_db()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM Student;")
     data = cursor.fetchall()
-    conn.close()
     return data
 
-def fetch_courses():
+def fetch_courses(conn):
     """Fetch all courses."""
-    conn = connect_db()
     cursor = conn.cursor()
     cursor.execute("SELECT * FROM Course;")
     data = cursor.fetchall()
-    conn.close()
     return data
 
-def fetch_enrollments():
+def fetch_enrollments(conn):
     """Fetch all enrollments with student names and course names."""
-    conn = connect_db()
     cursor = conn.cursor()
     query = """
     SELECT 
@@ -44,32 +44,26 @@ def fetch_enrollments():
     """
     cursor.execute(query)
     data = cursor.fetchall()
-    conn.close()
     return data
 
-def search_students(field, search_value):
+def search_students(conn,field, search_value):
     """Search students based on a specific field and value."""
-    conn = connect_db()
     cursor = conn.cursor()
     query = f"SELECT * FROM Student WHERE {field} LIKE %s;"
     cursor.execute(query, (f"%{search_value}%",))
     data = cursor.fetchall()
-    conn.close()
     return data
 
-def search_courses(field, search_value):
+def search_courses(conn,field, search_value):
     """Search courses based on a specific field and value."""
-    conn = connect_db()
     cursor = conn.cursor()
     query = f"SELECT * FROM Course WHERE {field} LIKE %s;"
     cursor.execute(query, (f"%{search_value}%",))
     data = cursor.fetchall()
-    conn.close()
     return data
 
-def search_enrollments(field, search_value):
+def search_enrollments(conn,field, search_value):
     """Search enrollments based on a specific field and value."""
-    conn = connect_db()
     cursor = conn.cursor()
     query = f"""
     SELECT 
@@ -85,5 +79,4 @@ def search_enrollments(field, search_value):
     """
     cursor.execute(query, (f"%{search_value}%",))
     data = cursor.fetchall()
-    conn.close()
     return data
