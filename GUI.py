@@ -2,6 +2,8 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from main import connect_db, fetch_students, fetch_courses, fetch_enrollments, search_students, search_courses, search_enrollments
 
+
+
 # Manage connections globally
 connections = {}
 
@@ -122,7 +124,7 @@ pc2_var = tk.BooleanVar(value=False)
 pc3_var = tk.BooleanVar(value=False)
 
 pc1_checkbox = tk.Checkbutton(checkbox_frame, text="PC 1", variable=pc1_var,
-                               command=lambda: manage_connection("PC 1", "172.16.15.101", pc1_var.get()))
+                               command=lambda: manage_connection("PC 1", "172.16.15.202", pc1_var.get()))
 pc1_checkbox.grid(row=0, column=0, padx=10)
 
 pc2_checkbox = tk.Checkbutton(checkbox_frame, text="PC 2", variable=pc2_var,
@@ -130,7 +132,7 @@ pc2_checkbox = tk.Checkbutton(checkbox_frame, text="PC 2", variable=pc2_var,
 pc2_checkbox.grid(row=0, column=1, padx=10)
 
 pc3_checkbox = tk.Checkbutton(checkbox_frame, text="PC 3", variable=pc3_var,
-                               command=lambda: manage_connection("PC 3", "172.16.15.103", pc3_var.get()))
+                               command=lambda: manage_connection("PC 3", "172.16.16.0", pc3_var.get()))
 pc3_checkbox.grid(row=0, column=2, padx=10)
 
 # Combo Box, Filter, and Search
