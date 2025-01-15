@@ -41,7 +41,22 @@ def show_data(option, filter_option="none", search_value=""):
             tree.delete(row)  # Clear existing rows in the table
 
         # Check active connections
-        active_connections = connections.values()
+        active_connections = {}
+        for pc, conn in list(connections.items()):
+            try:
+                conn.ping(reconnect=True)  # Check if the connection is active
+                active_connections[pc] = conn
+            except Exception:
+                # Uncheck the checkbox and remove the connection
+                if pc == "PC 1":
+                    pc1_var.set(False)
+                elif pc == "PC 2":
+                    pc2_var.set(False)
+                elif pc == "PC 3":
+                    pc3_var.set(False)
+                del connections[pc]
+                messagebox.showwarning("Connection Lost", f"Connection to {pc} lost. Unchecking the box.")
+
         if not active_connections:
             messagebox.showwarning("No Connection", "No active connections. Please check at least one PC.")
             return
@@ -49,7 +64,7 @@ def show_data(option, filter_option="none", search_value=""):
         # Fetch data from all active connections
         data = []
         columns = ()
-        for conn in active_connections:
+        for conn in active_connections.values():
             if filter_option == "none":
                 if option == "students":
                     data += fetch_students(conn)
@@ -94,6 +109,7 @@ def show_data(option, filter_option="none", search_value=""):
 
     except Exception as e:
         messagebox.showerror("Error", f"Failed to fetch data: {e}")
+
 
 # Callback for combo box change
 def update_filter_options(option):
