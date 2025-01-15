@@ -7,7 +7,7 @@ from main import connect_db, fetch_students, fetch_courses, fetch_enrollments, s
 # Manage connections globally
 connections = {}
 
-def manage_connection(pc, ip, is_checked):
+def manage_connection(pc, ip, is_checked, var):
     """Establish or close connections based on the checkbox state."""
     global connections
     if is_checked:
@@ -16,6 +16,7 @@ def manage_connection(pc, ip, is_checked):
             messagebox.showinfo("Connection Status", f"Connected to {pc}.")
         except Exception as e:
             messagebox.showerror("Connection Error", f"Failed to connect to {pc}: {e}")
+            var.set(False)  # Automatically uncheck the checkbox
             if pc in connections:  # Ensure no partial connections remain
                 del connections[pc]
     else:
@@ -23,6 +24,7 @@ def manage_connection(pc, ip, is_checked):
             connections[pc].close()
             del connections[pc]
             messagebox.showinfo("Connection Status", f"Disconnected from {pc}.")
+
 
 
 def close_all_connections():
@@ -124,16 +126,17 @@ pc2_var = tk.BooleanVar(value=False)
 pc3_var = tk.BooleanVar(value=False)
 
 pc1_checkbox = tk.Checkbutton(checkbox_frame, text="PC 1", variable=pc1_var,
-                               command=lambda: manage_connection("PC 1", "172.16.15.202", pc1_var.get()))
+                               command=lambda: manage_connection("PC 1", "172.16.15.202", pc1_var.get(), pc1_var))
 pc1_checkbox.grid(row=0, column=0, padx=10)
 
 pc2_checkbox = tk.Checkbutton(checkbox_frame, text="PC 2", variable=pc2_var,
-                               command=lambda: manage_connection("PC 2", "172.16.15.102", pc2_var.get()))
+                               command=lambda: manage_connection("PC 2", "172.16.15.102", pc2_var.get(), pc2_var))
 pc2_checkbox.grid(row=0, column=1, padx=10)
 
 pc3_checkbox = tk.Checkbutton(checkbox_frame, text="PC 3", variable=pc3_var,
-                               command=lambda: manage_connection("PC 3", "172.16.16.0", pc3_var.get()))
+                               command=lambda: manage_connection("PC 3", "172.16.16.0", pc3_var.get(), pc3_var))
 pc3_checkbox.grid(row=0, column=2, padx=10)
+
 
 # Combo Box, Filter, and Search
 frame = tk.Frame(root)
